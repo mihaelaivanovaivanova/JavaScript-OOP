@@ -51,7 +51,6 @@ function solve() {
 
 		var idBook = createId();
 
-
 		function addBook(book) {
 			if (!book) {
 				throw "Please provide a book to add!";
