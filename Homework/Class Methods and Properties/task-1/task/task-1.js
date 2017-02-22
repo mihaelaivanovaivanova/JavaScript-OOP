@@ -1,24 +1,24 @@
 'use strict';
 
-class listNode {
+class ListNode {
     constructor(value, next) {
         this._value = value;
         this._next = next;
     }
-
     get value() {
         return this._value;
     }
 
-    set value(value) {
-        this._value = value;
+    set value(val) {
+        this._value = val;
     }
+
     get next() {
         return this._next;
     }
 
-    set next(next) {
-        this._next = next;
+    set next(nextNode) {
+        this._next = nextNode;
     }
 }
 
@@ -53,10 +53,10 @@ class LinkedList {
         }
     }
     indexValidation(index) {
-        if (!index) {
+        if (index===null) {
             throw 'Please provide an index!';
         } else if (index > this._length || index < 0) {
-            throw `Index must be between 0 and ${this._length - 1}`;
+            throw `Index must be between 0 and ${this._length}`;
         }
     }
 
@@ -64,14 +64,15 @@ class LinkedList {
         this.nullValidation(args);
 
         if (!this._first) {
-            let node = new listNode(args[0], null)
-            this._first = args[0];
-            this._last = args[0];
-            args = args.splice(0, 1);
+            let node = new ListNode(args[0], null)
+            this._first = node;
+            this._last = node;
+            this._length+=1;
+            args.splice(0, 1);
         }
 
         for (let i = 0; i < args.length; i += 1) {
-            let nodeToApend = new listNode(args[i], null);
+            let nodeToApend = new ListNode(args[i], null);
 
             if (!this._first.next) {
                 this._first.next = nodeToApend;
@@ -86,34 +87,37 @@ class LinkedList {
     }
 
     prepend(...args) {
-        nullValidation(args);
+        this.nullValidation(args);
 
-        if (!this._first) {
-            let node = new listNode(args[args.length - 1], null)
+         if (!this._first) {
+            let node = new ListNode(args[length - 1], null)
             this._first = node;
             this._last = node;
-            args = args.splice(args.length - 1, 1);
+            this._length+=1;
+            args.splice(args.length - 1, 1);
         }
 
-        for (let i = 0; i < args.length; i += 1) {
-            let node = new listNode(args[args.length - 1], this._first);
-            this.first = node;
+        for (let i = args.length - 1; i >= 0; i -= 1) {
+            let nodeToPrepend = new ListNode(args[i], this._first);
+
+            this._first = nodeToPrepend;
             this._length += 1;
         }
 
         return this;
     }
-
+    
     insert(index, ...args) {
-        indexValidation(index);
+        this.indexValidation(index);
         if (!args.length) {
             throw 'Provide at least one element to append!';
         }
 
         if (!this._first) {
-            let node = new listNode(args[args.length - 1], null)
+            let node = new ListNode(args[args.length - 1], null)
             this._first = node;
             this._last = node;
+            this._length+=1;
             args = args.splice(args.length - 1, 1);
         }
 
@@ -131,7 +135,7 @@ class LinkedList {
                 nodeAfterIndex = currentNode.next;
             }
 
-            let node = new listNode(args[args.length - i], nodeAfterIndex);
+            let node = new ListNode(args[args.length - i], nodeAfterIndex);
             if (!nodeAfterIndex) {
                 this._last = node;
             }
@@ -144,7 +148,7 @@ class LinkedList {
     }
 
     at(index, value) {
-        indexValidation(index);
+        this.indexValidation(index);
         if (index) {
             let currentNode = this._first;
             for (let i = 0; i < index; i += 1) {
@@ -159,11 +163,12 @@ class LinkedList {
     }
 
     removeAt(index){
-        indexValidation(index);
+        this.indexValidation(index);
         let elementAtIndex=this._first;
         for(let i=0; i<index;i+=1){
             elementAtIndex.next;
         }
+        return this;
     }
 
     toArray() {
@@ -172,6 +177,12 @@ class LinkedList {
            values.push(value);
        }
        return values;
+    }
+
+    toString(){
+        let valuesAsString=this.toArray();
+        let result =valuesAsString.join(' -> ');
+        return result;
     }
 
     *[Symbol.iterator]() {
